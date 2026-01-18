@@ -83,7 +83,7 @@ export async function POST(req: Request) {
         const responseData = {
             ...newRequest,
             id: newRequest.code,
-            clientId: client.code, // string
+            clientId: client.id, // numeric ID to match user.id
             serviceId: serviceId, // string
             // Adapt files back to batches strictly for return if needed, but frontend might just need optimistic
             batches: []
@@ -117,8 +117,8 @@ export async function GET(req: Request) {
             include: {
                 files: true,
                 service: true,
-                expert: true // Relation is 'expert', not 'assignedExpert' in new schema? Checking...
-                // Schema says: expertId Int?  expert User? @relation("ExpertRequests"...)
+                expert: true,
+                client: true
             },
             orderBy: { createdAt: 'desc' }
         });
@@ -141,7 +141,8 @@ export async function GET(req: Request) {
             return {
                 ...r,
                 id: r.code, // Adapter: Int -> Code
-                clientId: clientIdParam || 'UNKNOWN', // Should map better but OK for filter
+                clientId: r.clientId, // Actual numeric ID for dashboard filtering
+                clientName: (r.client?.profileData as any)?.companyName || r.client?.name || 'Unknown Client',
                 serviceName: r.service?.nameEn || 'Unknown Service',
                 expertName: r.expert?.name || null,
                 dateCreated: r.createdAt.toISOString().split('T')[0],
