@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  ADMIN
+  CLIENT
+  EXPERT
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING
+  VETTING
+}
+
+enum ServiceType {
+  ONE_TIME
+  RECURRING
+}
+
+enum BillingCycle {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum RequestStatus {
+  DRAFT
+  NEW
+  IN_POOL
+  ASSIGNED
+  IN_PROGRESS
+  UNDER_ADMIN_REVIEW
+  CLIENT_REVIEW
+  COMPLETED
+  REJECTED
+  CANCELLED
+}
+
+enum FileType {
+  SOURCE
+  WORKING
+  FINAL
+  OTHER
+}
+
+enum OcrStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// Core Models
+
+model User {
+  id            Int       @id @default(autoincrement())
+  code          String    @unique // Public ID: ADM-001, CUS-001
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          Role
+  status        UserStatus @default(ACTIVE)
+  profileData   Json?     // { companyName, industry, bio, skills, etc. }
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  clientRequests Request[] @relation("ClientRequests")
+  expertRequests Request[] @relation("ExpertRequests")
+  uploadedFiles  UploadedFile[]
+  payouts        PayoutRequest[]
+  
+  // Legacy / Feature Compat
+  permissions    ClientFeaturePermissions?
+}
+
+model Service {
+  id            Int         @id @default(autoincrement())
+  code          String      @unique // SER-001
+  nameEn        String
+  nameAr        String
+  descriptionEn String
+  descriptionAr String?
+  type          ServiceType
+  basePrice     Decimal     @db.Decimal(10, 2)
+  currency      String      @default("SAR")
+  slaDays       Int         @default(3)
+  isActive      Boolean     @default(true)
+  requests      Request[]
+}
+
+model PricingPlan {
+  id           Int          @id @default(autoincrement())
+  code         String       @unique // PAC-001
+  name         String
+  description  String?
+  billingCycle BillingCycle
+  price        Decimal      @db.Decimal(10, 2)
+  currency     String       @default("SAR")
+  features     Json         // List of feature strings
+  isActive     Boolean      @default(true)
+  requests     Request[]
+}
+
+model Request {
+  id          Int           @id @default(autoincrement())
+  code        String        @unique // REQ-001
+  
+  clientId    Int
+  client      User          @relation("ClientRequests", fields: [clientId], references: [id])
+  
+  expertId    Int?
+  expert      User?         @relation("ExpertRequests", fields: [expertId], references: [id])
+  
+  serviceId   Int?
+  service     Service?      @relation(fields: [serviceId], references: [id])
+  
+  planId      Int?
+  plan        PricingPlan?  @relation(fields: [planId], references: [id])
+
+  status      RequestStatus @default(DRAFT)
+  priority    String        @default("NORMAL")
+  description String?
+  metadata    Json?         // Custom form fields
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  files       UploadedFile[]
+  invoices    Invoice[]
+  timeline    RequestLog[]
+}
+
+model UploadedFile {
+  id          Int       @id @default(autoincrement())
+  requestId   Int?
+  request     Request?  @relation(fields: [requestId], references: [id])
+  
+  uploaderId  Int
+  uploader    User      @relation(fields: [uploaderId], references: [id])
+
+  name        String
+  url         String
+  size        Int?      // In Bytes
+  mimeType    String?
+  type        FileType  @default(OTHER)
+  
+  ocrStatus   OcrStatus @default(PENDING)
+  ocrData     Json?
+
+  createdAt   DateTime  @default(now())
+}
+
+model RequestLog {
+  id        Int      @id @default(autoincrement())
+  requestId Int
+  request   Request  @relation(fields: [requestId], references: [id])
+  actorId   Int      // ID of user who performed action (can't strict join easily if system, so keep ID)
+  action    String
+  details   Json?
+  createdAt DateTime @default(now())
+}
+
+model Invoice {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique // INV-001
+  
+  clientId  Int
+  // client    User     @relation(fields: [clientId], references: [id]) // Optional join
+  
+  requestId Int?
+  request   Request? @relation(fields: [requestId], references: [id])
+  
+  amount    Decimal  @db.Decimal(10, 2)
+  status    String   @default("UNPAID") // UNPAID, PAID, REFUNDED
+  
+  createdAt DateTime @default(now())
+  paidAt    DateTime?
+}
+
+model PayoutRequest {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique // PYO-001
+  
+  expertId    Int
+  expert      User     @relation(fields: [expertId], references: [id])
+  
+  amount      Decimal  @db.Decimal(10, 2)
+  status      String   @default("PENDING") // PENDING, APPROVED, PAID, REJECTED
+  
+  requestDate DateTime @default(now())
+  processedDate DateTime?
+}
+
+// Config & Settings
+
+model PlatformSettings {
+  id               String  @id @default("global")
+  showExpertsPage  Boolean @default(false)
+  showServicesPage Boolean @default(false)
+  careersEnabled   Boolean @default(false)
+  settingsJson     Json?   // flexible storage for banners, text, etc.
+}
+
+model ClientFeaturePermissions {
+  id                  Int     @id @default(autoincrement())
+  clientId            Int     @unique
+  client              User    @relation(fields: [clientId], references: [id])
+  canViewReports      Boolean @default(true)
+  canUploadDocs       Boolean @default(true)
+  canDownloadInvoices Boolean @default(true)
+  canRequestCalls     Boolean @default(true)
+  canSubmitTickets    Boolean @default(true)
+  canViewMarketplace  Boolean @default(false)
+}

@@ -1,0 +1,9 @@
+{
+    "name": "shim-backend",
+    "version": "1.0.0",
+    "scripts": {
+        "build": "cd .. && npm install && npm run build",
+        "dev": "cd .. && npm run dev",
+        "start": "cd .. && npm start"
+    }
+}
