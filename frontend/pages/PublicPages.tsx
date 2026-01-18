@@ -77,12 +77,12 @@ export const ServicesPage = () => {
                                     <Icon size={32} />
                                 </div>
                                 <h3 className="text-2xl font-bold text-slate-900 mb-3">{service.nameEn}</h3>
-                                <p className="text-slate-500 mb-8 flex-1 leading-relaxed">{service.description}</p>
+                                <p className="text-slate-500 mb-8 flex-1 leading-relaxed">{service.descriptionEn || service.description}</p>
 
                                 <div className="pt-6 border-t border-slate-50 flex items-center justify-between mt-auto">
                                     <div>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t('public.startingFrom')}</p>
-                                        <p className="text-2xl font-black text-slate-900">{service.price.toLocaleString()} <span className="text-sm text-slate-400 font-medium">{t('common.sar')}</span></p>
+                                        <p className="text-2xl font-black text-slate-900">{service.basePrice ? service.basePrice.toLocaleString() : service.price.toLocaleString()} <span className="text-sm text-slate-400 font-medium">{t('common.sar')}</span></p>
                                     </div>
                                     <Button onClick={() => handleBookService(service.id)} className="bg-slate-900 hover:bg-blue-600 text-white rounded-xl px-6 py-3 font-bold transition-colors shadow-lg shadow-slate-200">
                                         {t('public.bookNow')}
