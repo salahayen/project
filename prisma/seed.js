@@ -177,6 +177,8 @@ async function main() {
   console.log('💎 Plans created');
 
   // 7. Request (Draft)
+  const service1 = await prisma.service.findUnique({ where: { code: 'SER-001' } });
+
   const req = await prisma.request.upsert({
     where: { code: 'REQ-001' },
     update: {},
