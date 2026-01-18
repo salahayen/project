@@ -15,7 +15,7 @@ export async function OPTIONS() {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { clientId, serviceId, amount, description, batches } = body;
+        const { clientId, serviceId, planId, amount, description, batches, status, metadata } = body;
 
         // 1. Resolve Client (Code -> ID)
         const client = await prisma.user.findUnique({ where: { code: clientId } });
@@ -23,11 +23,17 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Client not found' }, { status: 404, headers: corsHeaders });
         }
 
-        // 2. Resolve Service (Code -> ID)
+        // 2. Resolve Service or Plan (Code -> ID)
         let serviceIntId: number | null = null;
         if (serviceId) {
             const service = await prisma.service.findUnique({ where: { code: serviceId } });
             if (service) serviceIntId = service.id;
+        }
+
+        let planIntId: number | null = null;
+        if (planId) {
+            const plan = await prisma.pricingPlan.findUnique({ where: { code: planId } });
+            if (plan) planIntId = plan.id;
         }
 
         // 3. Generate Request Code
@@ -58,14 +64,18 @@ export async function POST(req: Request) {
                 code: reqCode,
                 clientId: client.id,
                 serviceId: serviceIntId,
-                status: 'NEW', // Enum
+                planId: planIntId,
+                status: (status as any) || 'NEW', // Enum
                 description: description || '',
+                metadata: metadata || {},
                 files: {
                     create: filesToCreate
                 }
             },
             include: {
-                files: true
+                files: true,
+                service: true,
+                plan: true
             }
         });
 

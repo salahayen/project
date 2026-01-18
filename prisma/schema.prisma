@@ -35,6 +35,8 @@ enum BillingCycle {
 
 enum RequestStatus {
   DRAFT
+  PENDING_PAYMENT
+  PAID
   NEW
   IN_POOL
   ASSIGNED

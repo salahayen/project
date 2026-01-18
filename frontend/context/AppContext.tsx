@@ -25,6 +25,7 @@ interface AppContextType {
 
   // Actions
   addRequest: (req: Request) => void;
+  createRequest: (reqData: any) => Promise<any>;
   updateRequestStatus: (id: string, status: Request['status']) => void;
   assignRequest: (requestId: string, expertId: string) => void;
   updateExpertStatus: (expertId: string, status: Expert['status']) => void;
@@ -321,36 +322,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
-  const addRequest = async (req: Request) => {
-    // 1. Optimistic UI Update
-    setRequests(prev => [req, ...prev]);
-    showToast('Request created successfully!', 'success');
-
-    // 2. Persist to Backend (Disabled)
-    /*
+  const createRequest = async (reqData: any) => {
     try {
       const payload = {
-        clientId: req.clientId,
-        serviceId: req.serviceId,
-        description: req.description,
-        amount: req.amount,
-        batches: req.batches
+        clientId: user?.code,
+        ...reqData
       };
-  
+
       const res = await fetch(`${API_BASE_URL}/api/requests`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-  
+
       if (res.ok) {
         const savedReq = await res.json();
-        setRequests(prev => prev.map(r => r.id === req.id ? { ...r, id: savedReq.id, status: savedReq.status } : r));
+        setRequests(prev => [savedReq, ...prev]);
+        showToast('Request created successfully!', 'success');
+        return savedReq;
+      } else {
+        const err = await res.json();
+        showToast(err.error || 'Failed to create request', 'error');
+        throw new Error(err.error);
       }
     } catch (error) {
       console.error('Failed to save request to DB', error);
+      throw error;
     }
-    */
+  };
+
+  const addRequest = async (req: Request) => {
+    // 1. Optimistic UI Update
+    setRequests(prev => [req, ...prev]);
+    showToast('Request created successfully!', 'success');
   };
 
   const updateRequestStatus = async (id: string, status: Request['status']) => {
@@ -686,7 +690,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{
       user, login, logout, language, setLanguage, t, register,
       clients, experts, requests, services, plans, admins, payoutRequests,
-      addRequest, updateRequestStatus, assignRequest, updateExpertStatus, updateRequest,
+      addRequest, createRequest, updateRequestStatus, assignRequest, updateExpertStatus, updateRequest,
       updateClient, updateExpert, addClient, addExpert, submitReview,
       addAdmin, updateAdmin, deleteAdmin,
       updateService, addService, deleteService, updatePlan,

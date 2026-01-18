@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Check, X, HelpCircle, AlertTriangle } from 'lucide-react';
 
-const PricingTable = () => {
+const PricingTable = ({ highlight }: { highlight?: string }) => {
     const navigate = useNavigate();
     const { plans, user } = useAppContext();
     const [showOverage, setShowOverage] = useState(false);
@@ -56,14 +56,15 @@ const PricingTable = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
                 {plans.map(plan => {
                     const price = billingCycle === 'yearly' ? Math.floor(plan.price * 0.8) : plan.price;
-                    const isPopular = plan.name.includes('Standard'); // ZATCA Shield is popular
+                    // Highlight logic: If highlight param exists, match plan code. Else default to Standard being popular.
+                    const isHighlighted = highlight ? plan.code === highlight : plan.name.includes('Standard');
 
                     return (
-                        <div key={plan.id} className={`relative bg-white rounded-3xl p-8 flex flex-col transition-all duration-300 ${isPopular ? 'border-2 border-blue-500 shadow-2xl scale-105 z-10' : 'border border-slate-200 shadow-lg hover:shadow-xl'}`}>
+                        <div key={plan.id} className={`relative bg-white rounded-3xl p-8 flex flex-col transition-all duration-300 ${isHighlighted ? 'border-2 border-blue-500 shadow-2xl scale-105 z-10' : 'border border-slate-200 shadow-lg hover:shadow-xl'}`}>
 
-                            {isPopular && (
+                            {isHighlighted && (
                                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-md">
-                                    Most Popular
+                                    {highlight ? 'Recommended for You' : 'Most Popular'}
                                 </div>
                             )}
 
@@ -103,7 +104,7 @@ const PricingTable = () => {
                                         navigate(`/login?redirect=/client/checkout&planId=${plan.id}&billing=${billingCycle}`);
                                     }
                                 }}
-                                className={`w-full py-3 rounded-xl font-bold transition-all ${isPopular
+                                className={`w-full py-3 rounded-xl font-bold transition-all ${isHighlighted
                                     ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
                                     : 'bg-blue-600 text-white hover:bg-blue-700' // Keeping all buttons blue/prominent as per UI request usually
                                     }`}

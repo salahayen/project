@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Shield, Info, Phone, Briefcase, FileText,
     CheckCircle, CreditCard,
     UserCheck, Mail, Building, ShieldCheck, FileQuestion, Smartphone, Cpu, Check,
     BookOpen, Search, Coins, TrendingUp, Layout, Minus, HelpCircle, ArrowRight,
-    MessageCircle, FileCheck, Zap, Lock, MapPin, Globe, Star
+    MessageCircle, FileCheck, Zap, Lock, MapPin, Globe, Star, Play, Calculator, Users, Send
 } from 'lucide-react';
 import { Button } from '../components/UI';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import { useLocation } from 'react-router-dom';
+import PricingTable from '../components/PricingTable';
+import PlanCalculator from '../components/PlanCalculator'; // Import Calculator
 
 // --- Shared Components for Consistent UI ---
 
@@ -149,135 +152,23 @@ export const ServicesPage = () => {
     );
 };
 
+// Pricing Page
 export const PricingPage = () => {
-    const { plans, user, t } = useAppContext();
-    const navigate = useNavigate();
-    const [billing, setBilling] = useState<'MONTHLY' | 'YEARLY'>('YEARLY');
-
-    const handleSelectPlan = (planId: string) => {
-        if (user) {
-            navigate(`/client/checkout?planId=${planId}&billing=${billing}`);
-        } else {
-            navigate(`/login?redirect=/client/checkout&planId=${planId}&billing=${billing}`);
-        }
-    };
+    const { plans, t } = useAppContext();
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const highlight = params.get('highlight');
 
     return (
-        <div className="bg-white">
+        <div className="bg-slate-900 min-h-screen pt-20">
             <PageHeader
                 title={t('public.pricingTitle')}
                 subtitle={t('public.pricingDesc')}
-                icon={CreditCard}
-                color="emerald"
+                icon={Calculator}
+                color="green"
             />
-
-            <Section className="-mt-32 relative z-20">
-                <div className="flex justify-center mb-12">
-                    <div className="bg-slate-900/5 backdrop-blur-sm p-1.5 rounded-2xl border border-white/20 inline-flex relative shadow-lg">
-                        <button
-                            onClick={() => setBilling('MONTHLY')}
-                            className={`px-8 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${billing === 'MONTHLY' ? 'bg-white shadow-md text-slate-900 transform scale-105' : 'text-slate-300 hover:text-white'}`}
-                        >
-                            {t('public.monthly')}
-                        </button>
-                        <button
-                            onClick={() => setBilling('YEARLY')}
-                            className={`px-8 py-3 rounded-xl text-sm font-bold transition-all duration-200 flex items-center gap-2 ${billing === 'YEARLY' ? 'bg-white shadow-md text-slate-900 transform scale-105' : 'text-slate-300 hover:text-white'}`}
-                        >
-                            {t('public.yearly')} <span className="bg-gradient-to-r from-green-400 to-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">-20%</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                    {plans.map(plan => {
-                        const price = billing === 'YEARLY' ? Math.round(plan.price * 0.8) : plan.price;
-                        return (
-                            <div key={plan.id} className={`group relative p-10 bg-white rounded-[2.5rem] flex flex-col transition-all duration-300 ${plan.isPopular ? 'border-2 border-slate-900 shadow-2xl scale-105 z-10' : 'border border-slate-200 shadow-xl hover:translate-y-[-5px]'}`}>
-                                {plan.isPopular && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg flex items-center gap-2">
-                                        <Star size={12} fill="currentColor" /> {t('public.mostPopular')}
-                                    </div>
-                                )}
-
-                                <div className="mb-8">
-                                    <h3 className="text-2xl font-black text-slate-900 mb-2">{plan.name}</h3>
-                                    <p className="text-slate-500 text-sm leading-relaxed">{plan.description}</p>
-                                </div>
-
-                                <div className="mb-8 pb-8 border-b border-slate-100">
-                                    <div className="flex items-baseline">
-                                        <span className="text-5xl font-black text-slate-900 tracking-tight">{price}</span>
-                                        <span className="text-lg font-bold text-slate-400 ml-2"> {t('common.sar')}</span>
-                                    </div>
-                                    <p className="text-slate-400 text-sm font-medium mt-2">per month, billed {billing === 'YEARLY' ? 'annually' : 'monthly'}</p>
-                                </div>
-
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features.map((feature, i) => (
-                                        <li key={i} className="flex items-start gap-3 text-slate-600 font-medium text-sm group-hover:text-slate-900 transition-colors">
-                                            <div className="mt-0.5 bg-green-100 text-green-600 rounded-full p-1 shrink-0">
-                                                <Check size={12} strokeWidth={3} />
-                                            </div>
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-
-                                <div className="mt-auto">
-                                    <Button onClick={() => handleSelectPlan(plan.id)} className={`w-full py-4 rounded-xl text-lg font-bold transition-all ${plan.isPopular ? 'bg-slate-900 hover:bg-blue-600 shadow-xl shadow-slate-900/20' : 'bg-slate-100 text-slate-900 hover:bg-slate-200'}`}>
-                                        {t('public.getStarted')}
-                                    </Button>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {/* Comparison Table (Enhanced) */}
-                <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden mt-20">
-                    <div className="p-10 border-b border-slate-100 bg-slate-50/50 text-center">
-                        <h3 className="text-2xl font-black text-slate-900">{t('public.comparePlans')}</h3>
-                        <p className="text-slate-500 mt-2">Detailed feature breakdown</p>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm text-left">
-                            <thead>
-                                <tr className="bg-white">
-                                    <th className="p-6 pl-10 text-slate-400 font-bold uppercase tracking-wider text-xs w-1/3">Features</th>
-                                    {plans.map(p => <th key={p.id} className="p-6 text-center font-bold text-slate-900 text-lg">{p.name.split('(')[0]}</th>)}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {[
-                                    { name: 'VAT Registration', basic: true, std: true, pro: true },
-                                    { name: 'Quarterly Filing', basic: false, std: true, pro: true },
-                                    { name: 'Monthly Bookkeeping', basic: false, std: true, pro: true },
-                                    { name: 'Dedicated Accountant', basic: false, std: 'Shared Team', pro: 'Dedicated Expert' },
-                                    { name: 'Zakat Filing', basic: 'Estimated', std: true, pro: true },
-                                    { name: 'Audit Support', basic: false, std: false, pro: true },
-                                    { name: 'CFO Consultation', basic: false, std: false, pro: 'Monthly Call' },
-                                    { name: 'Fine Guarantee', basic: 'Basic', std: 'Full Coverage', pro: 'Full + Legal' },
-                                ].map((row, i) => (
-                                    <tr key={i} className="hover:bg-slate-50 transition-colors">
-                                        <td className="p-5 pl-10 font-bold text-slate-700">{row.name}</td>
-                                        <td className="p-5 text-center">
-                                            {row.basic === true ? <CheckCircle className="mx-auto text-green-500" size={20} fill="#dcfce7" /> : row.basic === false ? <Minus className="mx-auto text-slate-300" size={20} /> : <span className="text-slate-500 font-medium bg-slate-100 px-3 py-1 rounded-full text-xs">{row.basic}</span>}
-                                        </td>
-                                        <td className="p-5 text-center">
-                                            {row.std === true ? <CheckCircle className="mx-auto text-green-500" size={20} fill="#dcfce7" /> : row.std === false ? <Minus className="mx-auto text-slate-300" size={20} /> : <span className="text-slate-500 font-medium bg-slate-100 px-3 py-1 rounded-full text-xs">{row.std}</span>}
-                                        </td>
-                                        <td className="p-5 text-center">
-                                            {row.pro === true ? <CheckCircle className="mx-auto text-green-500" size={20} fill="#dcfce7" /> : row.pro === false ? <Minus className="mx-auto text-slate-300" size={20} /> : <span className="text-slate-900 font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs">{row.pro}</span>}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </Section>
+            {/* Pass highlight prop to PricingTable if it supports it, or handle it via URL params in PricingTable */}
+            <PricingTable highlight={highlight as string} />
         </div>
     );
 };
@@ -613,5 +504,5 @@ export const CompliancePage = () => {
     );
 };
 
-// Import Send icon which was missing in imports but used in Contact
-import { Send } from 'lucide-react';
+// Send icon already imported at top
+

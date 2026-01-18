@@ -35,6 +35,7 @@ import {
   ServicesPage, PricingPage, QAPage, AboutPage, CareersPage,
   ContactPage, PrivacyPage, TermsPage, CompliancePage
 } from './pages/PublicPages';
+import ClientCheckout from './pages/ClientCheckout';
 
 const ProtectedRoute = ({ children, allowedRoles }: { children?: React.ReactNode, allowedRoles: string[] }) => {
   const { user } = useAppContext();
@@ -140,7 +141,7 @@ const AppContent = () => {
         <Route path="/client/checkout" element={
           <ProtectedRoute allowedRoles={['CLIENT']}>
             <Layout title="Secure Checkout">
-              <PaymentPage />
+              <ClientCheckout />
             </Layout>
           </ProtectedRoute>
         } />
