@@ -533,7 +533,7 @@ const AdminDashboard = () => {
                                 <p className="text-sm text-slate-500">{t('admin.vettingQueueDesc')}</p>
                             </div>
                         </div>
-                        <Badge status="VETTING" className="px-3 py-1 text-sm rounded-xl" />
+                        <Badge status="VETTING" />
                     </div>
 
                     <div className="flex-1 overflow-y-auto max-h-[400px] pr-2 space-y-4">
@@ -598,7 +598,7 @@ const AdminDashboard = () => {
                                 <div className="flex-1 min-w-0 pt-1">
                                     <div className="flex justify-between items-start">
                                         <p className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">{req.serviceName}</p>
-                                        <p className="font-black text-slate-800 text-sm">{req.amount.toLocaleString()} SAR</p>
+                                        <p className="font-black text-slate-800 text-sm">{(Number(req.amount) || 0).toLocaleString()} SAR</p>
                                     </div>
                                     <div className="flex justify-between items-center mt-1">
                                         <p className="text-xs text-slate-500 font-medium">{req.clientName} • <span className="text-slate-400">{req.dateCreated}</span></p>

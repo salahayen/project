@@ -104,7 +104,7 @@ const ClientDashboard = () => {
                             <p className="text-emerald-50 font-medium mb-1 opacity-90">{new Date().toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
                             <h1 className="text-4xl md:text-6xl font-black tracking-tight mb-3 drop-shadow-sm leading-tight">
                                 {new Date().getHours() < 12 ? 'Good Morning' : new Date().getHours() < 18 ? 'Good Afternoon' : 'Good Evening'}, <br />
-                                <span className="opacity-90">{user?.name.split(' ')[0]}</span>
+                                <span className="opacity-90">{user?.name?.split(' ')[0] || 'User'}</span>
                             </h1>
                             <p className={`text-lg md:text-xl opacity-90 max-w-xl leading-relaxed font-medium text-emerald-50`}>
                                 {isSafe ? "You are fully compliant with ZATCA regulations." : t('client.dangerDesc')}
@@ -193,7 +193,7 @@ const ClientDashboard = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col items-end gap-1.5 relative z-10">
-                                    <span className="font-extrabold text-gray-900 text-base">{req.amount.toLocaleString()} <span className="text-xs text-gray-400">SAR</span></span>
+                                    <span className="font-extrabold text-gray-900 text-base">{(Number(req.amount) || 0).toLocaleString()} <span className="text-xs text-gray-400">SAR</span></span>
                                     <Badge status={req.status} />
                                 </div>
                             </div>

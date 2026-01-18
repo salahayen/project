@@ -68,6 +68,7 @@ export async function POST(req: Request) {
                 status: (status as any) || 'NEW', // Enum
                 description: description || '',
                 metadata: metadata || {},
+                amount: amount || 0,
                 files: {
                     create: filesToCreate
                 }
@@ -145,6 +146,7 @@ export async function GET(req: Request) {
                 clientName: (r.client?.profileData as any)?.companyName || r.client?.name || 'Unknown Client',
                 serviceName: r.service?.nameEn || 'Unknown Service',
                 expertName: r.expert?.name || null,
+                amount: Number(r.amount) || 0,
                 dateCreated: r.createdAt.toISOString().split('T')[0],
                 batches: r.files.length > 0 ? [virtualBatch] : []
             };
