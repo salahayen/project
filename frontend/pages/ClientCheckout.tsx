@@ -80,11 +80,16 @@ const ClientCheckout = () => {
         setLoading(true);
         // Simulate payment processing
         setTimeout(async () => {
+            if (request && request.id) {
+                try {
+                    await updateRequest(request.id, { status: 'PAID' });
+                } catch (e) {
+                    console.error('Failed to update request to PAID', e);
+                }
+            }
             // On success:
             setStep(3);
             setLoading(false);
-
-            // Update request status to PAID/IN_PROGRESS via API if needed
         }, 2000);
     };
 

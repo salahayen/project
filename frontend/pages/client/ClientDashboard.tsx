@@ -64,7 +64,7 @@ const ClientDashboard = () => {
     const finesSaved = (user as any)?.zatcaStatus === 'GREEN' ? 15000 : 0;
 
     const myRequests = requests.filter(r => r.clientId === user?.id);
-    const activeRequests = myRequests.filter(r => ['NEW', 'MATCHED', 'IN_PROGRESS', 'REVIEW_CLIENT', 'REVIEW_ADMIN'].includes(r.status));
+    const activeRequests = myRequests.filter(r => ['PENDING_PAYMENT', 'PAID', 'NEW', 'MATCHED', 'IN_PROGRESS', 'REVIEW_CLIENT', 'REVIEW_ADMIN'].includes(r.status));
     const needsAction = activeRequests.some(r => r.status === 'REVIEW_CLIENT');
 
 

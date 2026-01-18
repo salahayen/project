@@ -8,7 +8,7 @@ import { Mail, Lock, User, Building, Check, Github, Linkedin, ShieldCheck, Star,
 import { Client } from '../types';
 
 const RegisterPage = () => {
-  const { addClient, login, t, language, setLanguage } = useAppContext();
+  const { register, t, language, setLanguage } = useAppContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [formData, setFormData] = useState({
@@ -27,22 +27,43 @@ const RegisterPage = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Parse query params for redirect logic
-    const searchParams = new URLSearchParams(location.search);
-    const redirect = searchParams.get('redirect');
-    const action = searchParams.get('action');
-    const serviceId = searchParams.get('serviceId');
-    const planId = searchParams.get('planId');
+    try {
+      const user = await register({
+        ...formData,
+        role: 'CLIENT'
+      });
 
-    const user = await addClient({ // Actually calling register, but mapped in context? No, I added register.
-      ...formData,
-      role: 'CLIENT'
-    });
+      if (user) {
+        // Parse query params for redirect logic
+        const searchParams = new URLSearchParams(location.search);
+        const redirect = searchParams.get('redirect');
 
-    // Wait, addClient is Void in context actions. I need `register` from context.
-    // I need to destructure `register` from `useAppContext()`.
+        if (redirect) {
+          const serviceId = searchParams.get('serviceId');
+          const planId = searchParams.get('planId');
+          const billing = searchParams.get('billing');
 
-    // Changing implementation to use `register`:
+          let finalRedirect = redirect;
+          const params = new URLSearchParams();
+          if (serviceId) params.append('serviceId', serviceId);
+          if (planId) params.append('planId', planId);
+          if (billing) params.append('billing', billing);
+
+          const queryString = params.toString();
+          if (queryString) {
+            finalRedirect += (finalRedirect.includes('?') ? '&' : '?') + queryString;
+          }
+
+          navigate(finalRedirect);
+        } else {
+          navigate('/client');
+        }
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

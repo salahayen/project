@@ -53,11 +53,22 @@ const LoginPage = () => {
 
       if (user.role === 'CLIENT') {
         if (redirect) {
-          const action = searchParams.get('action');
           const serviceId = searchParams.get('serviceId');
           const planId = searchParams.get('planId');
           const billing = searchParams.get('billing');
-          navigate(redirect, { state: { action, serviceId, planId, billing } });
+
+          let finalRedirect = redirect;
+          const params = new URLSearchParams();
+          if (serviceId) params.append('serviceId', serviceId);
+          if (planId) params.append('planId', planId);
+          if (billing) params.append('billing', billing);
+
+          const queryString = params.toString();
+          if (queryString) {
+            finalRedirect += (finalRedirect.includes('?') ? '&' : '?') + queryString;
+          }
+
+          navigate(finalRedirect);
         } else {
           navigate('/client');
         }

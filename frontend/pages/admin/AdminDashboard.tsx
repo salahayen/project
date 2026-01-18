@@ -47,7 +47,7 @@ const AdminDashboard = () => {
     const totalClients = clients.length;
 
     // --- 3. Request & Payout Stats ---
-    const pendingRequests = requests.filter(r => r.status === 'NEW');
+    const pendingRequests = requests.filter(r => r.status === 'NEW' || r.status === 'PAID');
     const pendingPayouts = payoutRequests.filter(p => p.status === 'PENDING');
     const totalOrders = requests.length;
 
@@ -590,7 +590,7 @@ const AdminDashboard = () => {
                                 className="relative z-10 flex items-start gap-4 py-4 px-2 hover:bg-blue-50/50 rounded-xl transition-all cursor-pointer group"
                             >
                                 <div className={`w-10 h-10 rounded-full shrink-0 shadow-sm flex items-center justify-center border-4 border-white ${req.status === 'COMPLETED' ? 'bg-green-100 text-green-600' :
-                                    req.status === 'NEW' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'
+                                    req.status === 'NEW' || req.status === 'PAID' ? 'bg-blue-100 text-blue-600' : 'bg-orange-100 text-orange-600'
                                     }`}>
                                     {req.status === 'COMPLETED' ? <CheckCircle size={16} strokeWidth={3} /> : <FileText size={16} strokeWidth={3} />}
                                 </div>

@@ -187,6 +187,7 @@ const ClientRequests = () => {
                             className="appearance-none pl-4 pr-10 py-2 border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer text-sm font-medium"
                         >
                             <option value="All">All Status</option>
+                            <option value="PENDING_PAYMENT">Pending Payment</option>
                             <option value="NEW">New</option>
                             <option value="IN_PROGRESS">In Progress</option>
                             <option value="REVIEW_CLIENT">Needs Approval</option>
