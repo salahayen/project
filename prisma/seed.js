@@ -7,10 +7,13 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting seed...');
 
-  // 1. Clean up (Optional, be careful in prod)
-  // await prisma.request.deleteMany();
-  // await prisma.user.deleteMany();
-  // ...
+  // 1. Clean up Legacy Data
+  try {
+    await prisma.pricingPlan.delete({ where: { code: 'PAC-001' } });
+    console.log('🗑️ Legacy plan PAC-001 deleted');
+  } catch (e) {
+    // Ignore if not found
+  }
 
   // 2. Create Admin
   const adminPassword = await bcrypt.hash('admin123', 10);
