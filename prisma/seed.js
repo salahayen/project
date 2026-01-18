@@ -72,51 +72,108 @@ async function main() {
   console.log('🏢 Client created:', client.code);
 
   // 5. Services
-  const service1 = await prisma.service.upsert({
-    where: { code: 'SER-001' },
-    update: {},
-    create: {
+  const servicesData = [
+    {
       code: 'SER-001',
-      nameEn: 'VAT Registration',
-      nameAr: 'التسجيل في ضريبة القيمة المضافة',
-      descriptionEn: 'Complete VAT registration service for new businesses.',
-      type: 'ONE_TIME',
+      nameEn: 'VAT Filing',
+      nameAr: 'إقرار ضريبة القيمة المضافة',
+      descriptionEn: 'Complete VAT return filing with ZATCA compliance review.',
+      type: 'RECURRING',
       basePrice: 500.00,
       currency: 'SAR',
       slaDays: 3
-    }
-  });
-
-  const service2 = await prisma.service.upsert({
-    where: { code: 'SER-002' },
-    update: {},
-    create: {
+    },
+    {
       code: 'SER-002',
-      nameEn: 'Quarterly VAT Filing',
-      nameAr: 'الإقرار الضريبي الربع سنوي',
-      descriptionEn: 'Review and submission of quarterly VAT returns.',
+      nameEn: 'Monthly Bookkeeping',
+      nameAr: 'مسك الدفاتر الشهرية',
+      descriptionEn: 'Professional financial record keeping and categorization.',
       type: 'RECURRING',
-      basePrice: 1500.00,
+      basePrice: 2500.00,
       currency: 'SAR',
       slaDays: 5
+    },
+    {
+      code: 'SER-003',
+      nameEn: 'Financial Audit',
+      nameAr: 'المراجعة المالية',
+      descriptionEn: 'Full annual financial audit by certified auditor.',
+      type: 'ONE_TIME',
+      basePrice: 15000.00,
+      currency: 'SAR',
+      slaDays: 14
+    },
+    {
+      code: 'SER-004',
+      nameEn: 'Zakat Advisory',
+      nameAr: 'استشارات الزكاة',
+      descriptionEn: 'Expert consultation on Zakat calculation and filing.',
+      type: 'ONE_TIME',
+      basePrice: 1000.00,
+      currency: 'SAR',
+      slaDays: 2
+    },
+    {
+      code: 'SER-005',
+      nameEn: 'CFO Advisory',
+      nameAr: 'استشارة المدير المالي',
+      descriptionEn: 'Strategic financial planning and growth auditing.',
+      type: 'RECURRING',
+      basePrice: 5000.00,
+      currency: 'SAR',
+      slaDays: 7
     }
-  });
+  ];
+
+  for (const s of servicesData) {
+    await prisma.service.upsert({
+      where: { code: s.code },
+      update: s,
+      create: s
+    });
+  }
   console.log('📦 Services created');
 
   // 6. Plans
-  const plan1 = await prisma.pricingPlan.upsert({
-    where: { code: 'PAC-001' },
-    update: {},
-    create: {
-      code: 'PAC-001',
-      name: 'Monthly Bookkeeping (Basic)',
-      description: 'Essential bookkeeping for small startups.',
+  // 20% discount logic is handled in frontend, we store monthly base price here.
+  const plansData = [
+    {
+      code: 'PAC-BASIC',
+      name: 'CR Guard (Basic)',
+      description: 'Dormant / Low-Activity CRs',
       billingCycle: 'MONTHLY',
-      price: 999.00,
+      price: 500.00,
       currency: 'SAR',
-      features: ['Up to 50 transactions', 'Monthly Report', 'VAT Ready']
+      features: ['Zero-filing VAT', 'Annual Qawaem (Basic)', 'Zakat "Estimated" Filing'],
+      // We'll store extra UI data in features or description if needed, or rely on frontend matching
+    },
+    {
+      code: 'PAC-STD',
+      name: 'ZATCA Shield (Standard)',
+      description: 'Active Shops / Cafes',
+      billingCycle: 'MONTHLY',
+      price: 1750.00,
+      currency: 'SAR',
+      features: ['Quarterly VAT Filing', 'Monthly Bookkeeping', 'E-Invoicing Review'],
+    },
+    {
+      code: 'PAC-PRO',
+      name: 'Audit Proof (Pro)',
+      description: 'Funded Startups / Contractors',
+      billingCycle: 'MONTHLY',
+      price: 5000.00,
+      currency: 'SAR',
+      features: ['Full Monthly Closing', 'Cost Center Accounting', 'Audit Coordination'],
     }
-  });
+  ];
+
+  for (const p of plansData) {
+    await prisma.pricingPlan.upsert({
+      where: { code: p.code },
+      update: { ...p, isActive: true },
+      create: { ...p, isActive: true }
+    });
+  }
   console.log('💎 Plans created');
 
   // 7. Request (Draft)
