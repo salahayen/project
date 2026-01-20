@@ -4,6 +4,7 @@ import { Button } from '../components/UI';
 import { CheckCircle, Users, Shield, TrendingUp, ArrowRight, Briefcase, UserPlus, MapPin, Activity, ShieldCheck, Star, Clock, Zap, Globe, MessageSquare, Play } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import RiskCalculator from '../components/RiskCalculator';
+import { riskCalculatorConfig } from '../components/RiskCalculatorConfig';
 import PricingTable from '../components/PricingTable';
 
 const HomePage = () => {
@@ -84,7 +85,7 @@ const HomePage = () => {
 
       {/* Calculator Section */}
       <div id="calculator">
-        <RiskCalculator />
+        <RiskCalculator config={riskCalculatorConfig} />
       </div>
 
       {/* Pricing Section */}
