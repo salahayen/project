@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../components/UI';
 import { CheckCircle, Users, Shield, TrendingUp, ArrowRight, Briefcase, UserPlus, MapPin, Activity, ShieldCheck, Star, Clock, Zap, Globe, MessageSquare, Play } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import TierCalculator from '../components/TierCalculator';
+import RiskCalculator from '../components/RiskCalculator';
 import PricingTable from '../components/PricingTable';
 
 const HomePage = () => {
@@ -44,12 +44,12 @@ const HomePage = () => {
               </h1>
 
               <p className="text-xl text-slate-400 mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed">
-                Stop worrying about VAT & ZATCA fines. Get matched with the perfect financial compliance plan for your business size.
+                Stop worrying about VAT & ZATCA fines. Check your compliance risk in 60 seconds and get protected instantly.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
                 <Button onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })} size="lg" className="px-8 py-6 text-lg rounded-2xl shadow-xl shadow-blue-500/10 bg-blue-600 hover:bg-blue-500 text-white border-none">
-                  Find My Plan
+                  Check My Risk Now
                 </Button>
               </div>
 
@@ -83,14 +83,8 @@ const HomePage = () => {
       </div>
 
       {/* Calculator Section */}
-      <div id="calculator" className="py-20 bg-slate-900 relative border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 text-center mb-12">
-          <h2 className="text-4xl font-black text-white mb-4">Calculate Your Tier</h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto">Answer 3 simple questions to find the perfect compliance package for your business.</p>
-        </div>
-        <div className="bg-slate-800/50 p-6 rounded-3xl border border-slate-700/50">
-          <TierCalculator />
-        </div>
+      <div id="calculator">
+        <RiskCalculator />
       </div>
 
       {/* Pricing Section */}

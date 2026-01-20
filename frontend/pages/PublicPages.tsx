@@ -11,7 +11,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { useLocation } from 'react-router-dom';
 import PricingTable from '../components/PricingTable';
-import PlanCalculator from '../components/PlanCalculator'; // Import Calculator
 
 // --- Shared Components for Consistent UI ---
 
