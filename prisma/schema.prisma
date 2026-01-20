@@ -129,6 +129,7 @@ model Request {
   service     Service?      @relation(fields: [serviceId], references: [id])
   
   planId      Int?
+  plan        PricingPlan? @relation(fields: [planId], references: [id])
   amount      Decimal       @default(0) @db.Decimal(10, 2)
   status      RequestStatus @default(DRAFT)
   priority    String        @default("NORMAL")
