@@ -33,7 +33,8 @@ import WhatsAppButton from './components/WhatsAppButton';
 import UnifiedChat from './components/UnifiedChat';
 import {
   ServicesPage, PricingPage, QAPage, AboutPage, CareersPage,
-  ContactPage, PrivacyPage, TermsPage, CompliancePage, RiskCalculatorPage
+  ContactPage, PrivacyPage, TermsPage, CompliancePage, RiskCalculatorPage,
+  BehaviorRiskCalculatorPage
 } from './pages/PublicPages';
 import ClientCheckout from './pages/ClientCheckout';
 
@@ -102,6 +103,7 @@ const AppContent = () => {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/compliance" element={<CompliancePage />} />
           <Route path="/risk-calculator" element={<RiskCalculatorPage />} />
+          <Route path="/behavioral-risk-check" element={<BehaviorRiskCalculatorPage />} />
         </Route>
 
         {/* Auth Pages */}

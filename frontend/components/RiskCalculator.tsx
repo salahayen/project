@@ -1,18 +1,21 @@
 
 import React, { useState, useMemo } from 'react';
-import { Shield, AlertTriangle, AlertCircle, Check, ArrowRight, ArrowLeft, Info, RefreshCcw } from 'lucide-react';
+import { Shield, AlertTriangle, AlertCircle, Check, ArrowRight, ArrowLeft, Info, RefreshCcw, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { riskCalculatorConfig } from './RiskCalculatorConfig';
 
-const RiskCalculator: React.FC = () => {
+interface RiskCalculatorProps {
+    config: any;
+}
+
+const RiskCalculator: React.FC<RiskCalculatorProps> = ({ config }) => {
     const { language } = useAppContext();
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState<Record<string, any>>({});
     const [showResults, setShowResults] = useState(false);
 
-    const questions = useMemo(() => riskCalculatorConfig.questions.sort((a, b) => a.order - b.order), []);
+    const questions = useMemo(() => [...config.questions].sort((a, b) => a.order - b.order), [config.questions]);
     const totalSteps = questions.length;
 
     const handleNext = () => {
@@ -31,7 +34,7 @@ const RiskCalculator: React.FC = () => {
 
     const calculateResult = () => {
         // Tracking event
-        console.log('risk_calculated', { answers });
+        console.log('risk_calculated', { calculator_id: config.calculator_id, answers });
         setShowResults(true);
     };
 
@@ -43,12 +46,12 @@ const RiskCalculator: React.FC = () => {
 
             if (q.type === 'number') {
                 const val = Number(answer);
-                const bucket = q.score_buckets?.find(b => val >= b.min && val <= b.max);
+                const bucket = q.score_buckets?.find((b: any) => val >= b.min && val <= b.max);
                 if (bucket) score += bucket.points;
             } else if (q.type === 'single_choice') {
-                const option = q.options?.find(o => o.value === answer);
+                const option = q.options?.find((o: any) => o.value === answer);
                 if (option) {
-                    option.score_delta_rules?.forEach(rule => {
+                    option.score_delta_rules?.forEach((rule: any) => {
                         if (rule.condition.always) score += rule.points;
                     });
                 }
@@ -58,7 +61,7 @@ const RiskCalculator: React.FC = () => {
     }, [answers, questions]);
 
     const resultData = useMemo(() => {
-        const { result_thresholds } = riskCalculatorConfig;
+        const { result_thresholds } = config;
         let band: 'green' | 'yellow' | 'red' = 'green';
 
         if (totalRiskScore <= result_thresholds.green.max_score) {
@@ -74,7 +77,7 @@ const RiskCalculator: React.FC = () => {
             ...result_thresholds[band],
             ui: result_thresholds[band].ui[language as 'en' | 'ar']
         };
-    }, [totalRiskScore, language]);
+    }, [totalRiskScore, language, config]);
 
     const resetCalculator = () => {
         setAnswers({});
@@ -83,7 +86,7 @@ const RiskCalculator: React.FC = () => {
     };
 
     const handleCTA = () => {
-        console.log('risk_cta_clicked', { band: resultData.band, score: totalRiskScore });
+        console.log('risk_cta_clicked', { calculator_id: config.calculator_id, band: resultData.band, score: totalRiskScore });
         navigate('/pricing');
     };
 
@@ -112,7 +115,7 @@ const RiskCalculator: React.FC = () => {
                     <h3 className="text-3xl font-extrabold text-gray-900 mb-6">{ui.headline}</h3>
 
                     <div className="space-y-4 mb-10 text-gray-600 text-lg max-w-2xl">
-                        {ui.message_lines.map((line, idx) => (
+                        {ui.message_lines.map((line: string, idx: number) => (
                             <p key={idx} className="leading-relaxed">{line}</p>
                         ))}
                     </div>
@@ -171,12 +174,20 @@ const RiskCalculator: React.FC = () => {
             </div>
 
             <div key={currentQuestion.id} className="animate-in fade-in slide-in-from-right-10 duration-500">
-                <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-10 leading-snug">
-                    {currentQuestion.label[language as 'en' | 'ar']}
-                </h3>
+                <div className="mb-10">
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 leading-snug">
+                        {currentQuestion.label[language as 'en' | 'ar']}
+                    </h3>
+                    {currentQuestion.help_text && (
+                        <div className="flex items-start gap-2 p-3 bg-blue-50/50 border border-blue-100 rounded-xl text-blue-800 text-sm">
+                            <HelpCircle size={16} className="mt-0.5 shrink-0" />
+                            <p>{currentQuestion.help_text[language as 'en' | 'ar']}</p>
+                        </div>
+                    )}
+                </div>
 
                 <div className="space-y-4 mb-12">
-                    {currentQuestion.type === 'single_choice' && currentQuestion.options?.map((opt) => (
+                    {currentQuestion.type === 'single_choice' && currentQuestion.options?.map((opt: any) => (
                         <button
                             key={opt.value}
                             onClick={() => {

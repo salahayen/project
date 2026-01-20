@@ -7,11 +7,12 @@ import {
     MessageCircle, FileCheck, Zap, Lock, MapPin, Globe, Star, Play, Calculator, Users, Send,
     AlertCircle, ArrowLeft
 } from 'lucide-react';
-import RiskCalculator from '../components/RiskCalculator';
 import { Button } from '../components/UI';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { useLocation } from 'react-router-dom';
+import RiskCalculator from '../components/RiskCalculator';
+import { riskCalculatorConfig } from '../components/RiskCalculatorConfig';
+import { behaviorRiskCalculatorConfig } from '../components/BehaviorRiskCalculatorConfig';
 import PricingTable from '../components/PricingTable';
 
 // --- Shared Components for Consistent UI ---
@@ -537,7 +538,7 @@ export const RiskCalculatorPage = () => {
             {/* Calculator Section */}
             <section className="py-20 -mt-20 relative z-20">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <RiskCalculator />
+                    <RiskCalculator config={riskCalculatorConfig} />
 
                     <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -571,6 +572,79 @@ export const RiskCalculatorPage = () => {
                             </h4>
                             <p className="text-sm text-gray-600">
                                 {language === 'ar' ? 'توصيات مباشرة لتحويل حالتك من منطقة الخطر إلى الالتزام.' : 'Direct recommendations to move from risk to compliance.'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+export const BehaviorRiskCalculatorPage = () => {
+    const { language } = useAppContext();
+    const seo = behaviorRiskCalculatorConfig.meta.seo[language as 'en' | 'ar'];
+
+    return (
+        <div className="min-h-screen bg-gray-50">
+            {/* Hero Section */}
+            <section className="relative py-20 bg-gradient-to-b from-slate-900 to-slate-800 text-white overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-700/20 skew-x-12 transform origin-top pointer-events-none"></div>
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-primary-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8">
+                        <Shield size={18} className="text-primary-400" />
+                        <span className="text-sm font-bold tracking-wide uppercase">
+                            {language === 'ar' ? 'فحص السلوك التشغيلي' : 'Operational Behavior Check'}
+                        </span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight leading-tight">
+                        {seo.h1}
+                    </h1>
+                    <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
+                        {seo.hero_subtitle}
+                    </p>
+                </div>
+            </section>
+
+            {/* Calculator Section */}
+            <section className="py-20 -mt-20 relative z-20">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <RiskCalculator config={behaviorRiskCalculatorConfig} />
+
+                    <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center md:items-start">
+                            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl mb-4">
+                                <Users size={24} />
+                            </div>
+                            <h4 className="font-bold text-gray-900 mb-2">
+                                {language === 'ar' ? 'مخاطر التستر' : 'Tasattur Risks'}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                                {language === 'ar' ? 'تحليل أنماط الملكية والسداد للكشف عن ثغرات التستر التجاري.' : 'Analyzing ownership and payment patterns to detect Tasattur gaps.'}
+                            </p>
+                        </div>
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center md:items-start">
+                            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl mb-4">
+                                <Coins size={24} />
+                            </div>
+                            <h4 className="font-bold text-gray-900 mb-2">
+                                {language === 'ar' ? 'سلامة الحسابات' : 'Banking Health'}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                                {language === 'ar' ? 'فحص فصل الحسابات الشخصية عن التجارية لضمان شفافية التدفق النقدي.' : 'Checking separation of personal and business accounts for cashflow transparency.'}
+                            </p>
+                        </div>
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center md:items-start">
+                            <div className="p-3 bg-purple-50 text-purple-600 rounded-xl mb-4">
+                                <FileText size={24} />
+                            </div>
+                            <h4 className="font-bold text-gray-900 mb-2">
+                                {language === 'ar' ? 'التوثيق القانوني' : 'Legal Documentation'}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                                {language === 'ar' ? 'تقييم مدى دقة توثيق القرارات والعقود الخاصة بالمنشأة.' : 'Evaluating the accuracy of documenting corporate decisions and contracts.'}
                             </p>
                         </div>
                     </div>
