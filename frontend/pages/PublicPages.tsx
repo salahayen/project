@@ -4,8 +4,10 @@ import {
     CheckCircle, CreditCard,
     UserCheck, Mail, Building, ShieldCheck, FileQuestion, Smartphone, Cpu, Check,
     BookOpen, Search, Coins, TrendingUp, Layout, Minus, HelpCircle, ArrowRight,
-    MessageCircle, FileCheck, Zap, Lock, MapPin, Globe, Star, Play, Calculator, Users, Send
+    MessageCircle, FileCheck, Zap, Lock, MapPin, Globe, Star, Play, Calculator, Users, Send,
+    AlertCircle, ArrowLeft
 } from 'lucide-react';
+import RiskCalculator from '../components/RiskCalculator';
 import { Button } from '../components/UI';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
@@ -503,5 +505,77 @@ export const CompliancePage = () => {
     );
 };
 
-// Send icon already imported at top
 
+export const RiskCalculatorPage = () => {
+    const { language } = useAppContext();
+
+    return (
+        <div className="min-h-screen bg-gray-50">
+            {/* Hero Section */}
+            <section className="relative py-20 bg-gradient-to-b from-primary-900 to-primary-800 text-white overflow-hidden">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-primary-700/20 skew-x-12 transform origin-top pointer-events-none"></div>
+                <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8">
+                        <Shield size={18} className="text-secondary-400" />
+                        <span className="text-sm font-bold tracking-wide uppercase">
+                            {language === 'ar' ? 'فحص الامتثال المجاني' : 'Free Compliance Check'}
+                        </span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight leading-tight">
+                        {language === 'ar' ? 'حاسبة مخاطر غرامات الزكاة والضريبة' : 'Penalty Risk Calculator'}
+                    </h1>
+                    <p className="text-xl text-primary-100 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
+                        {language === 'ar'
+                            ? 'اكتشف نقاط الضعف في التزام منشأتك واحصل على تقدير فوري للغرامات المحتملة وكيفية تجنبها.'
+                            : 'Identify compliance gaps in your business and get an instant estimate of potential penalties and how to avoid them.'}
+                    </p>
+                </div>
+            </section>
+
+            {/* Calculator Section */}
+            <section className="py-20 -mt-20 relative z-20">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <RiskCalculator />
+
+                    <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <div className="p-3 bg-blue-50 text-blue-600 rounded-xl w-fit mb-4">
+                                <Shield size={24} />
+                            </div>
+                            <h4 className="font-bold text-gray-900 mb-2">
+                                {language === 'ar' ? 'تحليل شامل' : 'Deep Analysis'}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                                {language === 'ar' ? 'نغطي الزكاة، الضريبة، الفوترة الإلكترونية والقوائم.' : 'We cover Zakat, VAT, E-Invoicing, and Qawaem.'}
+                            </p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <div className="p-3 bg-amber-50 text-amber-600 rounded-xl w-fit mb-4">
+                                <AlertCircle size={24} />
+                            </div>
+                            <h4 className="font-bold text-gray-900 mb-2">
+                                {language === 'ar' ? 'تقدير واقعي' : 'Realistic Estimate'}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                                {language === 'ar' ? 'نتائج مبنية على الأنظمة واللوائح الحالية في المملكة.' : 'Results based on current KSA regulations and laws.'}
+                            </p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                            <div className="p-3 bg-green-50 text-green-600 rounded-xl w-fit mb-4">
+                                <Check size={24} />
+                            </div>
+                            <h4 className="font-bold text-gray-900 mb-2">
+                                {language === 'ar' ? 'حلول فورية' : 'Instant Solutions'}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                                {language === 'ar' ? 'توصيات مباشرة لتحويل حالتك من منطقة الخطر إلى الالتزام.' : 'Direct recommendations to move from risk to compliance.'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+};
