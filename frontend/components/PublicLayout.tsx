@@ -38,6 +38,7 @@ const PublicLayout = () => {
     { name: language === 'ar' ? 'حاسبة المخاطر' : 'Risk Calculator', path: '/risk-calculator', visible: true },
     { name: language === 'ar' ? 'فحص السلوك' : 'Behavior Check', path: '/behavioral-risk-check', visible: true },
     { name: language === 'ar' ? 'اختبار الالتزام' : 'Compliance Quiz', path: '/compliance-quiz', visible: true },
+    { name: language === 'ar' ? 'تدقيق الالتزام' : 'Compliance Audit', path: '/compliance-audit', visible: true },
     { name: t('nav.about'), path: '/about', visible: getVisibility('about') },
     { name: settings.careersTitle || t('footer.careers'), path: '/careers', visible: settings.careersEnabled }
   ].filter(link => link.visible);

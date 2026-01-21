@@ -5,7 +5,7 @@ import {
     UserCheck, Mail, Building, ShieldCheck, FileQuestion, Smartphone, Cpu, Check, Clock,
     BookOpen, Search, Coins, TrendingUp, Layout, Minus, HelpCircle, ArrowRight,
     MessageCircle, FileCheck, Zap, Lock, MapPin, Globe, Star, Play, Calculator, Users, Send,
-    AlertCircle, ArrowLeft
+    AlertCircle, ArrowLeft, Activity
 } from 'lucide-react';
 import { Button } from '../components/UI';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -14,6 +14,7 @@ import RiskCalculator from '../components/RiskCalculator';
 import { riskCalculatorConfig } from '../components/RiskCalculatorConfig';
 import { behaviorRiskCalculatorConfig } from '../components/BehaviorRiskCalculatorConfig';
 import { liteComplianceQuizConfig } from '../components/LiteComplianceQuizConfig';
+import { standardRiskCalculatorConfig } from '../components/StandardRiskCalculatorConfig';
 import PricingTable from '../components/PricingTable';
 
 // --- Shared Components for Consistent UI ---
@@ -721,6 +722,62 @@ export const LiteComplianceQuizPage = () => {
                                 {language === 'ar' ? 'نتائج سهلة الفهم مع خطوات عملية واضحة.' : 'Easy to understand results with clear actionable steps.'}
                             </p>
                         </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+export const StandardRiskCalculatorPage = () => {
+    const { language } = useAppContext();
+    const seo = standardRiskCalculatorConfig.meta.seo[language as 'en' | 'ar'];
+
+    return (
+        <div className="min-h-screen bg-slate-50">
+            {/* Header Section */}
+            <section className="relative py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-950 text-white overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+                <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+                    <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 mb-8 shadow-2xl">
+                        <Activity size={20} className="text-secondary-400 animate-pulse" />
+                        <span className="text-sm font-black tracking-widest uppercase">
+                            {language === 'ar' ? 'تدقيق الالتزام القياسي' : 'Standard Compliance Audit'}
+                        </span>
+                    </div>
+                    <h1 className="text-4xl md:text-7xl font-black mb-8 tracking-tight leading-[1.1] max-w-4xl mx-auto">
+                        {seo.h1}
+                    </h1>
+                    <p className="text-xl text-blue-100/80 max-w-2xl mx-auto mb-4 leading-relaxed font-medium">
+                        {seo.hero_subtitle}
+                    </p>
+                </div>
+            </section>
+
+            {/* Calculator Section */}
+            <section className="py-24 relative z-20 -mt-16">
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="bg-white/70 backdrop-blur-3xl rounded-[3rem] p-1 shadow-2xl shadow-blue-900/10 border border-white/50">
+                        <RiskCalculator config={standardRiskCalculatorConfig} />
+                    </div>
+
+                    <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[
+                            { icon: Shield, title: language === 'ar' ? 'تغطية شاملة' : 'Full Coverage', desc: language === 'ar' ? 'يغطي الزكاة والضريبة والفوترة والعنوان والعمليات الدولية.' : 'Covers Zakat, Tax, Invoicing, Address, and Int’l Ops.' },
+                            { icon: FileCheck, title: language === 'ar' ? 'متوافق مع ٢٠٢٤' : '2024 Ready', desc: language === 'ar' ? 'محدث وفقًا لآخر أنظمة هيئة الزكاة والضريبة والجمارك.' : 'Updated per the latest ZATCA and regulatory rules.' },
+                            { icon: TrendingUp, title: language === 'ar' ? 'تحليل المخاطر' : 'Risk Insight', desc: language === 'ar' ? 'احصل على قيمة تقديرية للتعرض المالي للغرامات.' : 'Get an estimated value of financial penalty exposure.' },
+                            { icon: Zap, title: language === 'ar' ? 'نتائج فورية' : 'Instant Result', desc: language === 'ar' ? 'تقرير فوري يوضح نقاط الضعف في نظام الالتزام لديك.' : 'Immediate report highlighting gaps in your compliance setup.' }
+                        ].map((item, i) => (
+                            <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:border-blue-100 group">
+                                <div className="w-14 h-14 bg-slate-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+                                    <item.icon size={26} />
+                                </div>
+                                <h4 className="font-black text-slate-900 mb-3 text-lg leading-tight">{item.title}</h4>
+                                <p className="text-sm text-slate-500 leading-relaxed font-medium">{item.desc}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

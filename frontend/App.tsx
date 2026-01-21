@@ -34,7 +34,7 @@ import UnifiedChat from './components/UnifiedChat';
 import {
   ServicesPage, PricingPage, QAPage, AboutPage, CareersPage,
   ContactPage, PrivacyPage, TermsPage, CompliancePage, RiskCalculatorPage,
-  BehaviorRiskCalculatorPage, LiteComplianceQuizPage
+  BehaviorRiskCalculatorPage, LiteComplianceQuizPage, StandardRiskCalculatorPage
 } from './pages/PublicPages';
 import ClientCheckout from './pages/ClientCheckout';
 
@@ -105,6 +105,7 @@ const AppContent = () => {
           <Route path="/risk-calculator" element={<RiskCalculatorPage />} />
           <Route path="/behavioral-risk-check" element={<BehaviorRiskCalculatorPage />} />
           <Route path="/compliance-quiz" element={<LiteComplianceQuizPage />} />
+          <Route path="/compliance-audit" element={<StandardRiskCalculatorPage />} />
         </Route>
 
         {/* Auth Pages */}
