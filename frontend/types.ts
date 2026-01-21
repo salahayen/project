@@ -101,6 +101,7 @@ export interface PlatformSettings {
   careersSubtitle?: string;
   pageVisibility?: string; // JSON string
   sitePages?: string; // JSON string
+  whatsappNumber?: string;
 }
 
 export interface ClientFeaturePermissions {

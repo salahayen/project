@@ -212,6 +212,11 @@ model PlatformSettings {
   showExpertsPage  Boolean @default(false)
   showServicesPage Boolean @default(false)
   careersEnabled   Boolean @default(false)
+  careersTitle     String?
+  careersSubtitle  String?
+  pageVisibility   String? // JSON string
+  sitePages        String? // JSON string
+  whatsappNumber   String?
   settingsJson     Json?   // flexible storage for banners, text, etc.
 }
 

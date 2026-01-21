@@ -309,7 +309,7 @@ const PublicLayout = () => {
                 <Mail size={16} className="text-primary-500" /> support@finume.com
               </div>
               <div className="flex items-center gap-2 hover:text-white transition-colors cursor-pointer">
-                <Phone size={16} className="text-primary-500" /> +966 54 000 0000
+                <Phone size={16} className="text-primary-500" /> {settings.whatsappNumber || '+966 54 000 0000'}
               </div>
             </div>
           </div>

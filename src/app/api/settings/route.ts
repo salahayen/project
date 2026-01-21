@@ -15,6 +15,7 @@ export async function GET(request: Request) {
                     showExpertsPage: false,
                     showServicesPage: false,
                     careersEnabled: false,
+                    whatsappNumber: "966540507585",
                     sitePages: JSON.stringify([
                         { id: 'about', slug: '/about', title: 'About Us', section: 'COMPANY', isSystem: true, showPublic: true, showClient: true },
                         { id: 'careers', slug: '/careers', title: 'Careers', section: 'COMPANY', isSystem: true, showPublic: true, showClient: false },

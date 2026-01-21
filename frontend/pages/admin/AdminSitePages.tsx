@@ -6,7 +6,7 @@ import { Save, Plus, Edit, Trash, Globe, Lock, Info, CheckCircle, LayoutTemplate
 import { SitePage } from '../../types';
 
 const AdminSitePages = () => {
-    const { settings, updateSitePages } = useAppContext();
+    const { settings, updateSitePages, updateSettings } = useAppContext();
     const [pages, setPages] = useState<SitePage[]>([]);
     const [selectedPageId, setSelectedPageId] = useState<string | null>(null);
     const [editForm, setEditForm] = useState<Partial<SitePage> & { contentBuffer?: any }>({});
@@ -160,6 +160,30 @@ const AdminSitePages = () => {
                             >
                                 <Save size={16} className="mr-2" /> Save Changes
                             </Button>
+                        </div>
+
+                        {/* Global Settings (WhatsApp) */}
+                        <div className="mb-8 p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                            <h3 className="text-sm font-bold text-blue-800 mb-3">Global Settings</h3>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">WhatsApp Contact Number</label>
+                                <div className="flex gap-3 items-center">
+                                    <input
+                                        type="text"
+                                        placeholder="e.g. 966540507585"
+                                        className="flex-1 text-sm px-4 py-2 border border-blue-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 font-mono"
+                                        value={settings.whatsappNumber || ''}
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, ''); // Only numbers
+                                            updateSettings({ whatsappNumber: val });
+                                        }}
+                                    />
+                                    <div className="flex flex-col">
+                                        <p className="text-[10px] text-blue-600 font-bold">Instantly Updates WhatsApp Button</p>
+                                        <p className="text-[9px] text-blue-400">Current: {settings.whatsappNumber || 'Default'}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Visibility Toggles */}
